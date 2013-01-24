@@ -1,0 +1,16 @@
+#! /bin/bash
+
+# Get latest changes
+git pull
+
+# Clonning thirt-party repos
+git submodule update --init
+
+# Adding my theme
+rm -f ~/.oh-my-zsh/themes/greenlantern.zsh-theme
+ln -s ~/.dotfiles/greenlantern.zsh-theme ~/.oh-my-zsh/themes
+
+# Remove README.md
+rm -f ~/.README.md
+
+echo "Everything done!"

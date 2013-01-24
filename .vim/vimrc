@@ -1,0 +1,263 @@
+" Turn off compatible with Vi
+set nocompatible
+
+" Line breaking
+set wrap
+set linebreak
+set list
+set listchars=tab:>-,trail:-
+
+" Syntax highlighting
+syntax on
+
+" Show current command in bottom right corner
+set showcmd
+
+" Show matching brackets
+set showmatch
+" Show matching tags for html
+set matchpairs+=<:>
+
+" Allways show statusline
+set laststatus=2
+set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+
+" Don't unload buffer while starting another one
+set hidden
+
+" Show line numbers
+set number
+
+" Smart tab ident
+set smartindent
+set autoindent
+
+" Tab size
+set tabstop=2
+set shiftwidth=2
+set expandtab
+
+" Highlight current line
+set cursorline
+
+" Smart paste
+set pastetoggle=
+
+" Auto reload file after some changes
+set autoread
+
+" Set folding method
+set foldmethod=manual
+
+" Autocomplete
+set completeopt=longest,menuone
+""improve autocomplete menu color
+highlight Pmenu ctermbg=238 gui=bold
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+
+" Swap files directory
+"set dir=~/.vim/swap/
+
+" Do not create backups
+set nobackup
+
+
+" Default encodings
+set encoding=utf-8
+set termencoding=utf-8
+
+" Default fileformat
+set fileformat=unix
+
+" Known fileformats
+set ffs=unix,dos,mac
+
+" File encodings
+set fileencodings=utf-8,koi8-r,cp1251,cp866
+
+" Working backspace
+set backspace=2
+
+" Show all commands in comandline autoindent
+"set wildmenu
+"set wildmode=list:longest,full
+set wildmode=longest,list,full
+set wildmenu
+
+" Restore cursor position
+if has("autocmd")
+  set viewoptions=cursor
+  au BufWinLeave ?* mkview 1
+  au BufWinEnter ?* silent loadview 1
+  autocmd BufNewFile,BufRead *.coffee set filetype=coffee
+endif
+
+" Set maximum history size
+set history=10000
+
+
+"" Search block
+
+" Highlight searching things
+set hlsearch
+
+" Search-as-type
+set incsearch
+
+" Don't highlight search results
+nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
+
+" If search pattern has uppercase - it would search in case sensitive mode
+set ignorecase smartcase
+
+" Mouse support
+set mouse=a
+set mousehide
+
+" Show tabline
+set showtabline=2
+
+" Spell checking
+"set spell
+"set spelllang=en
+
+
+" Stop search after reaching EOF
+" set nowrapscan
+
+"" Some abbr block
+abbr teh the
+abbr edn end
+
+"" Key bindings block
+
+" Move around splits with <c-hjkl>
+nnoremap <c-j> <c-w>j
+nnoremap <c-k> <c-w>k
+nnoremap <c-h> <c-w>h
+nnoremap <c-l> <c-w>l
+
+" Can't be bothered to understand ESC vs <c-c> in insert mode
+imap <c-c> <esc>
+
+" Save for F2
+nmap <F2> :w!<CR>
+imap <F2> <Esc>:w!<CR>
+vmap <F2> <Esc>:w!<CR>
+
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+map <leader>e :edit %%
+map <leader>v :view %%
+
+function! RenameFile()
+    let old_name = expand('%')
+    let new_name = input('New file name: ', expand('%'), 'file')
+    if new_name != '' && new_name != old_name
+        exec ':saveas ' . new_name
+        exec ':silent !rm ' . old_name
+        redraw!
+    endif
+endfunction
+map <leader>n :call RenameFile()<cr>
+
+" Switching between tabs with C-tab and S-tab
+" FIXME not working!
+"map <A-TAB> :tabprevious<CR>
+"nmap <A-TAB> :tabprevious<CR>
+"imap <C-S-TAB> <Esc>:tabprevious<CR>i
+map  <S-TAB> :tabnext<CR>
+nmap <S-TAB> :tabnext<CR>
+imap <S-TAB> <Esc>:tabnext<CR>i
+silent! nmap <silent> <Leader>t :tabnew<CR>
+silent! nmap <silent> <Leader>c :tabclose<CR>
+
+
+silent! nmap <silent> <Leader>p :NERDTreeToggle<CR>
+" Close tab with c-w
+"nmap <C-w> :tabclose<CR>
+"imap <C-w> <Esc>:tabclose<CR>
+
+" NERDtree
+" silent! nmap <silent> <Leader>p :NERDTreeToggle<CR>
+
+" Turn off arrows. YEA BITCHES!
+:imap <UP> <NOP>
+:imap <DOWN> <NOP>
+:imap <LEFT> <NOP>
+:imap <RIGHT> <NOP>
+:imap <HOME> <NOP>
+:imap <END> <NOP>
+:imap <PageUp> <NOP>
+:imap <PageDown> <NOP>
+:imap <Del> <NOP>
+
+:map <UP> <NOP>
+:map <DOWN> <NOP>
+:map <LEFT> <NOP>
+:map <RIGHT> <NOP>
+:map <HOME> <NOP>
+:map <END> <NOP>
+:map <PageUp> <NOP>
+:map <PageDown> <NOP>
+:map <Del> <NOP>
+
+:vmap <UP> <NOP>
+:vmap <DOWN> <NOP>
+:vmap <LEFT> <NOP>
+:vmap <RIGHT> <NOP>
+:vmap <HOME> <NOP>
+:vmap <END> <NOP>
+:vmap <PageUp> <NOP>
+:vmap <PageDown> <NOP>
+:vmap <Del> <NOP>
+
+"" Colorcheme block
+set background=dark
+"if $COLORTERM == 'rxvt-xpm'
+  let g:solarized_termcolors=256
+  set t_Co=256
+  set term=rxvt-256color
+  colorscheme xoria256
+"else
+"  colorscheme default
+"endif
+
+" Highlight code after 80 symbols
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
+
+"" Some magic block. I know that I will regret about it, 
+"" but to me laziness to write comments right now. But someday...
+set confirm
+au BufNewFile,BufRead *.md set ft=md
+
+"" Bundle config
+filetype off
+filetype plugin on
+filetype plugin indent on
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+Bundle 'gmarik/vundle'
+
+"here goes bundles
+Bundle 'snipMate'
+Bundle "honza/snipmate-snippets"
+Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-repeat'
+Bundle 'kien/ctrlp.vim'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'scrooloose/syntastic'
+Bundle 'tpope/vim-eunuch'
+Bundle 'tpope/vim-fugitive'
+Bundle 'vim-ruby/vim-ruby'
+Bundle 'scrooloose/nerdtree'
+Bundle 'hughbien/md-vim'
+filetype on

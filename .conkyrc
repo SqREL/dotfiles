@@ -1,0 +1,13 @@
+cpu_avg_samples 2
+net_avg_samples 2
+#use_xft no
+update_interval 1
+#border_margin 4
+default_color 6A6A6A
+
+out_to_x no
+out_to_console yes
+short_units yes
+
+TEXT
+Uptime: $uptime | RAM: $mem | Network: ${wireless_essid wlan0} | Volume: ${exec amixer get Master | egrep -o "[0-9]+%" | head -1 | egrep -o "[0-9]*"}% | Layout: ${exec skb 1} | Weather: ${execi 3600 /home/sqrel/.conky/weather.sh "EUR|UA|UK118|L'viv"} | DateTime: ${time %d/%m/%y %H:%M:%S} 
