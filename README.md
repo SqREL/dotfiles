@@ -1,7 +1,4 @@
-Installation
-============
-
-Prerequisites
+Requirements
 -------------
 
 * Git
@@ -9,8 +6,11 @@ Prerequisites
 * RVM
 * Vim
 
-In fact, there's the only thing is _realy_ neded is git, but there is no sense to use
+In fact, there's the only thing is _really_ needed is git, but there is no sense to use
 this dotfile without other stuff
+
+Installation
+------------
 
 Clone repo
 
