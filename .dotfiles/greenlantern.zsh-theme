@@ -3,12 +3,9 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}) "
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[yellow]%}+%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_CLEAN=""
 
-# RVM info
-if [[ -s ~/.rvm/scripts/rvm ]] ; then 
-  RPS1='%{$fg[magenta]%}[`~/.rvm/bin/rvm-prompt`]%{$reset_color%} $EPS1'
-else
-  RPS1=''
-fi
+# Rbenv info
+
+RPS1='%{$fg[red]%}[`rbenv version | sed -e "s/ (set.*$//"`]%{$reset_color%} $EPS1'
 
 # Colors vary depending on time lapsed.
 ZSH_THEME_GIT_TIME_SINCE_COMMIT_SHORT="%{$fg[green]%}"

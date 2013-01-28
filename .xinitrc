@@ -2,8 +2,8 @@ export GDK_USE_XFT=1
 setxkbmap -option terminate:ctrl_alt_bksp
 
 DEFAULT_SESSION=i3
-export TERMINAL='terminator'
-[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+export TERMINAL='urxvt'
+[[ -f ~/.Xdefaults ]] && xrdb -merge ~/.Xdefaults
 xmodmap ~/.Xmodmap
 
 case $1 in

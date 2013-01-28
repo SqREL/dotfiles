@@ -9,6 +9,7 @@ set listchars=tab:>-,trail:-
 
 " Syntax highlighting
 syntax on
+syntax enable
 
 " Show current command in bottom right corner
 set showcmd
@@ -198,6 +199,7 @@ silent! nmap <silent> <Leader>p :NERDTreeToggle<CR>
 :imap <PageUp> <NOP>
 :imap <PageDown> <NOP>
 :imap <Del> <NOP>
+:imap <F1> <NOP>
 
 :map <UP> <NOP>
 :map <DOWN> <NOP>
@@ -208,6 +210,7 @@ silent! nmap <silent> <Leader>p :NERDTreeToggle<CR>
 :map <PageUp> <NOP>
 :map <PageDown> <NOP>
 :map <Del> <NOP>
+:map <F1> <NOP>
 
 :vmap <UP> <NOP>
 :vmap <DOWN> <NOP>
@@ -218,13 +221,14 @@ silent! nmap <silent> <Leader>p :NERDTreeToggle<CR>
 :vmap <PageUp> <NOP>
 :vmap <PageDown> <NOP>
 :vmap <Del> <NOP>
+:vmap <F1> <NOP>
 
 "" Colorcheme block
 set background=dark
 "if $COLORTERM == 'rxvt-xpm'
-  let g:solarized_termcolors=256
+"  let g:solarized_termcolors=256
   set t_Co=256
-  set term=rxvt-256color
+"  set term=rxvt-256color
   colorscheme xoria256
 "else
 "  colorscheme default

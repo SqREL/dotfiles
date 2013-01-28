@@ -24,9 +24,10 @@ alias mount_home='sudo mount -t 192.168.0.100:/srv/nfs4/sqrel /home/sqrel/Networ
 alias umount_store='sudo umount /home/sqrel/Network/Store'
 alias umount_home='sudo umount /home/sqrel/Network/pc_home'
 
-alias uj='rvm use jruby@heap'
-alias ur='rvm use ruby@heap'
-alias ux='rvm use rbx@heap'
+# TODO: Make this for rbenv
+#alias uj='rvm use jruby@heap'
+#alias ur='rvm use ruby@heap'
+#alias ux='rvm use rbx@heap'
 
 alias dhome='HOME=$HOME/.dropbox-personal/ setsid /usr/bin/dropbox start -i'
 alias dwork='HOME=$HOME/.dropbox-work/ setsid /usr/bin/dropbox start -i'
@@ -51,12 +52,19 @@ alias rake="noglob rake"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git rvm rails ruby autojump bundler compleat dircycle dirpersist gem git-flow gradle nyan rake zeus)
+plugins=(git rbenv rails ruby autojump bundler compleat gem git-flow gradle rake zeus)
 
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
+PATH="$PATH:/usr/local/heroku/bin:$HOME/.dotfiles/bin"
 
-PATH="$PATH:$HOME/.rvm/bin:/usr/local/heroku/bin:$HOME/.dotfiles/bin"
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+# Ruby speed-up
+export RUBY_HEAP_MIN_SLOTS=1000000
+export RUBY_HEAP_FREE_MIN=500000
+export RUBY_HEAP_SLOTS_INCREMENT=1000000
+export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
+export RUBY_GC_MALLOC_LIMIT=100000000

@@ -12,7 +12,7 @@
 exec batti
 exec feh --bg-scale '/home/sqrel/Pictures/bg.jpg'
 #exec export TERM='rxvt-256color'
-exec export TERMINAL='terminator'
+exec export TERMINAL='urxvt'
 
 set $1 1: web
 set $2 2: code
