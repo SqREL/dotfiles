@@ -52,19 +52,19 @@ alias rake="noglob rake"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git rbenv rails ruby autojump bundler compleat gem git-flow gradle rake zeus)
+plugins=(git rvm rails ruby autojump bundler compleat gem git-flow gradle rake zeus)
 
-source $ZSH/oh-my-zsh.sh
-
-# Customize to your needs...
-
-PATH="$PATH:/usr/local/heroku/bin:$HOME/.dotfiles/bin"
-
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-# Ruby speed-up
 export RUBY_HEAP_MIN_SLOTS=1000000
 export RUBY_HEAP_FREE_MIN=500000
 export RUBY_HEAP_SLOTS_INCREMENT=1000000
 export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
 export RUBY_GC_MALLOC_LIMIT=100000000
+
+source $ZSH/oh-my-zsh.sh
+
+# Customize to your needs...
+PATH="$PATH:$HOME/.rvm/bin:/usr/local/heroku/bin:$HOME/.dotfiles/bin"
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # This loads RVM into a shell session.
+
+# Ruby speed-up
+
