@@ -24,7 +24,8 @@ call dein#add('Shougo/neoinclude.vim')
 " call dein#add('Shougo/neco-synax')
 
 " Colorscheme
-call dein#add('mhartington/oceanic-next')
+" call dein#add('mhartington/oceanic-next')
+call dein#add('fcpg/vim-fahrenheit')
 
 " Autocoplete
 call dein#add('Shougo/deoplete.nvim')
@@ -37,10 +38,10 @@ call dein#add('Xuyuanp/nerdtree-git-plugin')
 call dein#add('junegunn/fzf')
 
 " Syntax checker
-call dein#add('scrooloose/syntastic')
+"call dein#add('scrooloose/syntastic')
 
 " Rubocop
-call dein#add('ngmy/vim-rubocop')
+" call dein#add('ngmy/vim-rubocop')
 
 " Print vertical lines at each indentation level
 call dein#add('Yggdroot/indentLine')
@@ -89,7 +90,7 @@ filetype plugin indent on
 let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
 
 syntax enable
-colorscheme OceanicNext
+colorscheme fahrenheit
 set background=dark
 " let g:airline_theme='oceanicnext'
 " let g:airline_powerline_fonts=1
@@ -143,9 +144,9 @@ set undofile
 " Set tab size
 set tabstop=2
 set shiftwidth=2
-set softtabstop=2
 set expandtab " replace tabs to spaces
 set smarttab " only even number of spaces (3 spaces + tab = 4 spaces, 2 spaces + tab = 4 spaces)
+set nojoinspaces
 
 " Use system clipboard
 set clipboard=unnamedplus
@@ -192,11 +193,13 @@ map <leader>t :FZF<CR>
 " Set cusom config file for RuboCop
 let g:vimrubocop_config = '~/.config/nvim/rubocop.yml'
 
+tnoremap <Esc> <C-\><C-n>
 
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
