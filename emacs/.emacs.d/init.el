@@ -18,9 +18,6 @@
 
 (setq use-package-always-ensure t)
 
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(load "edit-indirect")
-
 ;;; -*- lexical-binding: t -*-
 
 (defun tangle-init ()

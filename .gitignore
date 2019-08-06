@@ -1,2 +1,5 @@
-emacs.d/elpa
-config/fish/functions/work.fish
+emacs/.emacs.d/elpa
+emacs/.emacs.d/projectile-bookmarks.eld
+emacs/.emacs.d/transient/history.el
+fish/.config/fish/functions/work.fish
+nvim/.config/nvim/pack/minpac/start/

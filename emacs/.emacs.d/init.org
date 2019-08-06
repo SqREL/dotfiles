@@ -60,13 +60,6 @@ Install use-package.
 (setq use-package-always-ensure t)
 #+END_SRC
 
-** Manually installed packages
-
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(load "edit-indirect")
-#+END_SRC
-
 ** Modifier keys
 
 Emacs control is Ctrl. Emacs Super is Command. Emacs Meta is Alt.
