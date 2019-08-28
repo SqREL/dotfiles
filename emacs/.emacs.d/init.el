@@ -1,3 +1,4 @@
+(setq user-emacs-directory (file-truename "~/dotfiles/emacs/.emacs.d/"))
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                  (not (gnutls-available-p))))
@@ -313,7 +314,7 @@ tangled, and the tangled file is compiled."
 
                         (compilation-mode    :select t   :size 0.25)
                         ("*compilation*"     :select nil :size 0.25)
-                        ("*ag search*"       :select nil :size 0.25)
+                        ("*ag searcph*"       :select nil :size 0.25)
                         ("*Flycheck errors*" :select nil :size 0.25)
                         ("*Warnings*"        :select nil :size 0.25)
                         ("*Error*"           :select nil :size 0.25)
@@ -353,7 +354,7 @@ tangled, and the tangled file is compiled."
   :config
   (define-key projectile-mode-map (kbd "s-P") 'projectile-command-map)
   (projectile-mode +1)
-  (setq projectile-project-search-path '("~/Code/")))
+  (setq projectile-project-search-path '("~/Code/" "~/Code/matic")))
 
 (use-package ivy
   :config
@@ -403,12 +404,6 @@ tangled, and the tangled file is compiled."
   :config
   (global-set-key (kbd "s-g") 'magit-status))
 
-(use-package git-gutter
-  :config
-  (global-git-gutter-mode 't)
-  (set-face-foreground 'git-gutter:added "green4")
-  (set-face-foreground 'git-gutter:deleted "red"))
-
 (use-package neotree
   :config
   (setq neo-window-width 32
@@ -454,8 +449,15 @@ tangled, and the tangled file is compiled."
 (use-package ruby-mode
   :mode "\\.rb\\'"
   :interpreter "ruby")
-(use-package go-mode)
+(use-package rspec-mode
+  :config
+  (require 'rspec-mode))
 (use-package clojure-mode)
+(use-package dockerfile-mode
+  :config
+  (require 'dockerfile-mode)
+  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+  (add-to-list 'auto-mode-alist '("\\.docker\\'" . dockerfile-mode)))
 
 (use-package web-mode
   :mode ("\\.html\\'")
