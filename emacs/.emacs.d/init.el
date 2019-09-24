@@ -36,6 +36,8 @@ tangled, and the tangled file is compiled."
 (eval-when-compile
   (setq use-package-expand-minimally byte-compile-current-file))
 
+;;(toggle-frame-fullscreen)
+
 (when (memq window-system '(mac ns))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)) ;; {light, dark}
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
@@ -46,7 +48,7 @@ tangled, and the tangled file is compiled."
   :demand
   :config (load-theme 'dracula t))
 
-(set-face-attribute 'default nil :font "Liga Hack 14")
+(set-face-attribute 'default nil :font "Fira Code Retina 12")
 (setq-default line-spacing 0)
 (setq initial-frame-alist '((top . 50) (left . 100) (width . 210) (height . 70)))
 (tool-bar-mode -1)
@@ -68,7 +70,7 @@ tangled, and the tangled file is compiled."
 
 (setq column-number-mode t) ;; show columns in addition to rows in mode line
 
-(global-linum-mode 1)
+(global-display-line-numbers-mode t)
 
 (setq-default frame-title-format "%b (%f)")
 
@@ -350,59 +352,63 @@ tangled, and the tangled file is compiled."
 
 (global-unset-key (kbd "s-n"))
 
+;; Go to other windows easily with one keystroke Cmd-something.
+(global-set-key (kbd "s-1") (kbd "C-x 1"))  ;; Cmd-1 kill other windows (keep 1)
+(global-set-key (kbd "s-2") (kbd "C-x 2"))  ;; Cmd-2 split horizontally
+(global-set-key (kbd "s-3") (kbd "C-x 3"))  ;; Cmd-3 split vertically
+(global-set-key (kbd "s-0") (kbd "C-x 0"))  ;; Cmd-0...
+(global-set-key (kbd "s-w") (kbd "C-x 0"))  ;; ...and Cmd-w to close current window
+
 (use-package projectile
   :config
   (define-key projectile-mode-map (kbd "s-P") 'projectile-command-map)
   (projectile-mode +1)
-  (setq projectile-project-search-path '("~/Code/" "~/Code/matic")))
+  (setq projectile-project-search-path '("/Users/sqrel/Code/" "/Users/sqrel/Code/matic")))
 
-(use-package ivy
+(use-package helm-swoop
   :config
-  (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-initial-inputs-alist nil)
-  (setq ivy-re-builders-alist
-      '((swiper . ivy--regex-plus)
-        (t      . ivy--regex-fuzzy)))   ;; enable fuzzy searching everywhere except for Swiper
+  (global-set-key (kbd "s-f") 'helm-swoop))
 
-  (global-set-key (kbd "s-b") 'ivy-switch-buffer)
-  ;; (global-set-key (kbd "M-s-b") 'ivy-resume)
+(use-package helm
+  :config
+  (require 'helm-config)
+  (helm-mode 1)
+  (helm-autoresize-mode 1)
+  (setq helm-follow-mode-persistent t)
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  (setq helm-M-x-fuzzy-match t)
+  (setq helm-buffers-fuzzy-matching t)
+  (setq helm-recentf-fuzzy-match t)
+  (setq helm-apropos-fuzzy-match t)
+  (setq helm-split-window-inside-p t)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "s-b") 'helm-mini)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
   )
+(setq helm-swoop-pre-input-function
+      (lambda () ""))
 
-(use-package swiper
+(use-package helm-projectile
   :config
-  ;; (global-set-key "\C-s" 'swiper)
-  ;; (global-set-key "\C-r" 'swiper)
-  (global-set-key (kbd "s-f") 'swiper))
+  (helm-projectile-on))
 
-(use-package counsel
+(use-package helm-ag
   :config
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "s-y") 'counsel-yank-pop)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file))
+  (global-set-key (kbd "s-F") 'helm-projectile-ag))
 
-(use-package smex)
-(use-package flx)
-(use-package avy)
-
-(use-package ivy-rich
-  :config
-  (ivy-rich-mode 1)
-  (setq ivy-rich-path-style 'abbrev)) ;; To abbreviate paths using abbreviate-file-name (e.g. replace “/home/username” with “~”
-
-(use-package counsel-projectile
-  :config
-  (counsel-projectile-mode 1)
-  (global-set-key (kbd "s-F") 'counsel-projectile-ag)
-  (global-set-key (kbd "s-p") 'counsel-projectile))
-
-(setq projectile-completion-system 'ivy)
+(global-set-key (kbd "s-p") 'helm-projectile-find-file)
 
 (use-package magit
   :config
   (global-set-key (kbd "s-g") 'magit-status))
+
+(use-package git-gutter
+  :diminish
+  :config
+  (global-git-gutter-mode 't)
+  (set-face-background 'git-gutter:modified 'nil)   ;; background color
+  (set-face-foreground 'git-gutter:added "green4")
+  (set-face-foreground 'git-gutter:deleted "red"))
 
 (use-package neotree
   :config
@@ -452,12 +458,22 @@ tangled, and the tangled file is compiled."
 (use-package rspec-mode
   :config
   (require 'rspec-mode))
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode)
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode)
+  (package-install 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
 (use-package clojure-mode)
 (use-package dockerfile-mode
   :config
   (require 'dockerfile-mode)
   (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
   (add-to-list 'auto-mode-alist '("\\.docker\\'" . dockerfile-mode)))
+(use-package yafolding :defer t
+  :hook ((prog-mode . yafolding-mode)))
 
 (use-package web-mode
   :mode ("\\.html\\'")
@@ -526,7 +542,7 @@ tangled, and the tangled file is compiled."
 (global-set-key (kbd "\e\em") (lambda () (interactive) (find-file "~/Dropbox/me.txt/org/main.org")))
 (global-set-key (kbd "\e\el") (lambda () (interactive) (find-file "~/Dropbox/me.txt/org/links.org")))
 (global-set-key (kbd "\e\ew") (lambda () (interactive) (find-file "~/Dropbox/me.txt/org/work.org")))
-(global-set-key (kbd "\e\ef") (lambda () (interactive) (counsel-ag nil "~/Dropbox/me.txt/org")))
+(global-set-key (kbd "\e\et") (lambda () (interactive) (find-file "~/Code/test.rb")))
 
 (global-set-key (kbd "C-c c") 'org-capture)
 
@@ -572,3 +588,17 @@ tangled, and the tangled file is compiled."
                 (file+datetree "work.org")
                 "* TODO %?\n----Entered on %U"))
                ))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (yaml-mode yafolding which-key web-mode visual-regexp use-package super-save smartparens simpleclip shell-pop shackle rspec-mode powerthesaurus plantuml-mode neotree multiple-cursors move-text markdown-mode magit htmlize helm-swoop helm-projectile helm-ag haml-mode git-gutter flycheck expand-region exec-path-from-shell emmet-mode dumb-jump dracula-theme dockerfile-mode define-word company cider))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
