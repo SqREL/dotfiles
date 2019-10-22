@@ -49,7 +49,7 @@ call minpac#add('venantius/vim-cljfmt')
 call minpac#add('morhetz/gruvbox')
 
 " Programming tracker
-call minpac#add('wakatime/vim-wakatime')
+" call minpac#add('wakatime/vim-wakatime')
 
 " Ruby codesmell analyzer
 call minpac#add('rainerborene/vim-reek')

@@ -6,6 +6,8 @@ set -U EDITOR nvim
 set -U LC_ALL en_US.UTF-8
 set -x LC_ALL en_US.UTF-8
 set -U GOPATH /Users/sqrel/Code/go
+set fish_greeting
+
 
 function cdme
   cd /Users/sqrel/Dropbox/me.txt/

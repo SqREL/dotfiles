@@ -50,7 +50,7 @@ tangled, and the tangled file is compiled."
 
 (set-face-attribute 'default nil :font "Fira Code Retina 12")
 (setq-default line-spacing 0)
-(setq initial-frame-alist '((top . 50) (left . 100) (width . 210) (height . 70)))
+(setq initial-frame-alist '((top . 0) (left . 0) (width . 202) (height . 70)))
 (tool-bar-mode -1)
 
 (use-package smartparens
@@ -363,7 +363,7 @@ tangled, and the tangled file is compiled."
   :config
   (define-key projectile-mode-map (kbd "s-P") 'projectile-command-map)
   (projectile-mode +1)
-  (setq projectile-project-search-path '("/Users/sqrel/Code/" "/Users/sqrel/Code/matic")))
+  (setq projectile-project-search-path '("/Users/sqrel/Code/" "/Users/sqrel/Code/matic" "/Users/sqrel/projects")))
 
 (use-package helm-swoop
   :config
