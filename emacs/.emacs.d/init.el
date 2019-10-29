@@ -43,12 +43,12 @@ tangled, and the tangled file is compiled."
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 
   ;(load-theme 'tsdh-light)
-(use-package dracula-theme
+(use-package gruvbox-theme
   :ensure t
   :demand
-  :config (load-theme 'dracula t))
+  :config (load-theme 'gruvbox t))
 
-(set-face-attribute 'default nil :font "Fira Code Retina 12")
+(set-face-attribute 'default nil :font "Fira Code Retina 13")
 (setq-default line-spacing 0)
 (setq initial-frame-alist '((top . 0) (left . 0) (width . 202) (height . 70)))
 (tool-bar-mode -1)
@@ -363,7 +363,7 @@ tangled, and the tangled file is compiled."
   :config
   (define-key projectile-mode-map (kbd "s-P") 'projectile-command-map)
   (projectile-mode +1)
-  (setq projectile-project-search-path '("/Users/sqrel/Code/" "/Users/sqrel/Code/matic" "/Users/sqrel/projects")))
+  (setq projectile-project-search-path '("/Users/sqrel/projects/" "/Users/sqrel/projects/toptal")))
 
 (use-package helm-swoop
   :config
@@ -455,6 +455,7 @@ tangled, and the tangled file is compiled."
 (use-package ruby-mode
   :mode "\\.rb\\'"
   :interpreter "ruby")
+(use-package slim-mode)
 (use-package rspec-mode
   :config
   (require 'rspec-mode))
@@ -595,7 +596,7 @@ tangled, and the tangled file is compiled."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yaml-mode yafolding which-key web-mode visual-regexp use-package super-save smartparens simpleclip shell-pop shackle rspec-mode powerthesaurus plantuml-mode neotree multiple-cursors move-text markdown-mode magit htmlize helm-swoop helm-projectile helm-ag haml-mode git-gutter flycheck expand-region exec-path-from-shell emmet-mode dumb-jump dracula-theme dockerfile-mode define-word company cider))))
+    (yaml-mode yafolding which-key web-mode visual-regexp use-package super-save smartparens slim-mode simpleclip shell-pop shackle rspec-mode powerthesaurus plantuml-mode neotree multiple-cursors move-text markdown-mode magit htmlize helm-swoop helm-projectile helm-ag haml-mode gruvbox-theme git-gutter flycheck expand-region exec-path-from-shell emmet-mode dumb-jump dracula-theme dockerfile-mode define-word company cider))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

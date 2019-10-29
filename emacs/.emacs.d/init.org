@@ -142,16 +142,16 @@ Dracula seems to be perfect theme for everything.
 
 #+BEGIN_SRC emacs-lisp
   ;(load-theme 'tsdh-light)
-(use-package dracula-theme
+(use-package gruvbox-theme
   :ensure t
   :demand
-  :config (load-theme 'dracula t))
+  :config (load-theme 'gruvbox t))
 #+END_SRC
 
 Hack font, remove the cruft and make the initial size bigger.
 
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil :font "Fira Code Retina 12")
+(set-face-attribute 'default nil :font "Fira Code Retina 13")
 (setq-default line-spacing 0)
 (setq initial-frame-alist '((top . 0) (left . 0) (width . 202) (height . 70)))
 (tool-bar-mode -1)
@@ -647,7 +647,7 @@ Install Projectile.
   :config
   (define-key projectile-mode-map (kbd "s-P") 'projectile-command-map)
   (projectile-mode +1)
-  (setq projectile-project-search-path '("/Users/sqrel/Code/" "/Users/sqrel/Code/matic" "/Users/sqrel/projects")))
+  (setq projectile-project-search-path '("/Users/sqrel/projects/" "/Users/sqrel/projects/toptal")))
 #+END_SRC
 
 ** Helm
@@ -790,6 +790,7 @@ Here are all the packages needed for programming languages and formats.
 (use-package ruby-mode
   :mode "\\.rb\\'"
   :interpreter "ruby")
+(use-package slim-mode)
 (use-package rspec-mode
   :config
   (require 'rspec-mode))

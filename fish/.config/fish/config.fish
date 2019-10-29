@@ -61,3 +61,7 @@ function fish_prompt
 
   set_color normal
 end
+
+set -g fish_user_paths "/usr/local/opt/elasticsearch@5.6/bin" $fish_user_paths
+set -g fish_user_paths "/usr/local/opt/node@8/bin" $fish_user_paths
+set -g fish_user_paths "/usr/local/opt/imagemagick@6/bin" $fish_user_paths

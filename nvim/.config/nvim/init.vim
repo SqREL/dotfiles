@@ -27,7 +27,8 @@ call minpac#add('junegunn/fzf.vim')
 " Autocompletion
 call minpac#add('Shougo/deoplete.nvim')
 let g:deoplete#enable_at_startup = 1
-call minpac#add('tbodt/deoplete-tabnine', { 'do': './install.sh' })
+
+"call minpac#add('tbodt/deoplete-tabnine', { 'do': './install.sh' })
 
 " Nerd Tree for project browsing
 call minpac#add('scrooloose/nerdtree')
