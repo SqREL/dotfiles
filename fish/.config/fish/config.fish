@@ -3,11 +3,19 @@ function vim
 end
 
 set -U EDITOR nvim
+set -U BUNDLER_EDITOR nvim
 set -U LC_ALL en_US.UTF-8
 set -x LC_ALL en_US.UTF-8
-set -U GOPATH /Users/sqrel/Code/go
+set -x GOPATH $HOME/projects/go
 set fish_greeting
 
+function ls
+  exa $argv
+end
+
+function fzfprev
+  fzf --preview 'cat {}'
+end
 
 function cdme
   cd /Users/sqrel/Dropbox/me.txt/
@@ -65,3 +73,4 @@ end
 set -g fish_user_paths "/usr/local/opt/elasticsearch@5.6/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/node@8/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/imagemagick@6/bin" $fish_user_paths
+set -g fish_user_paths "$GOPATH/bin" $fish_user_paths

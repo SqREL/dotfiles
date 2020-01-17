@@ -1,6 +1,8 @@
 let g:python_host_prog = '/usr/local/bin/python2.7'
 let g:python3_host_prog = '/usr/local/bin/python3'
 
+" Configure vimwiki
+let g:vimwiki_list = [{'path': '~/knowledge/', 'syntax': 'markdown', 'ext': '.md'}]
 " This config will enable english language in vim.
 " Otherwise the language for some reason will be your local
 set langmenu=en_US
@@ -60,6 +62,27 @@ call minpac#add('dracula/vim')
 
 " fsdf
 call minpac#add('dag/vim-fish')
+
+" Vimwiki
+call minpac#add('vimwiki/vimwiki')
+
+call minpac#add('rhysd/git-messenger.vim')
+
+call minpac#add('elixir-editors/vim-elixir')
+
+" Linter
+call minpac#add('dense-analysis/ale')
+
+" Rails
+call minpac#add('tpope/vim-rails')
+
+" Language server (solargraph required)
+call minpac#add('autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh'})
+
+" Dash integration
+call minpac#add('rizzatti/dash.vim')
+
+call minpac#add('vim-airline/vim-airline')
 
 " Load packages right now
 packloadall
@@ -122,7 +145,7 @@ set clipboard=unnamedplus
 set ignorecase
 
 " Setup background
-set background=light
+set background=dark
 
 "colorscheme onehalflight
 colorscheme dracula
@@ -137,8 +160,10 @@ colorscheme dracula
 ""
 "" ----------------------------------------------------------------------------
 
+" Shorthey for fuzzy finder (not gitignored)
+map <leader>t :GFiles<CR>
 " Shorthey for fuzzy finder
-map <leader>t :FZF<CR>
+map <leader>f :FZF<CR>
 
 " move between splits by tab
 nnoremap <Tab> <C-w>w
@@ -153,5 +178,43 @@ map <leader>o :NERDTreeToggle<cr>
 inoremap <C-k> <C-Up>
 inoremap <C-j> <C-Down>
 
+nnoremap <C-l> :tabnext<CR>
+nnoremap <C-h> :tabprevious<CR>
+nnoremap <C-n> :tabnew<CR>
+tnoremap <Esc> <C-\><C-n>
+
+" Enable linter
+let g:ale_linters = {
+      \   'ruby': ['standardrb', 'rubocop']
+      \}
+let g:ale_fix_on_save = 1
+
+function! LinterStatus() abort
+  let l:counts = ale#statusline#Count(bufnr(''))
+
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
+
+  return l:counts.total == 0 ? '✨ all good ✨' : printf(
+        \   '😞 %dW %dE',
+        \   all_non_errors,
+        \   all_errors
+        \)
+endfunction
+
+set statusline=
+set statusline+=%m
+set statusline+=\ %f
+set statusline+=%=
+set statusline+=\ %{LinterStatus()}
+
+let g:LanguageClient_serverCommands = {
+    \ 'ruby': ['~/.rbenv/shims/solargraph', 'stdio'],
+    \ }
+
 " Turn on python3 
 let g:python3_host_prog = '/usr/local/bin/python3'
+
+
+" Move nerdtree to the right
+let g:NERDTreeWinPos = "right"
