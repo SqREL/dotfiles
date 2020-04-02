@@ -84,6 +84,10 @@ call minpac#add('rizzatti/dash.vim')
 
 call minpac#add('vim-airline/vim-airline')
 
+call minpac#add('tpope/vim-markdown')
+
+call minpac#add('tpope/rhubarb.vim')
+
 " Load packages right now
 packloadall
 

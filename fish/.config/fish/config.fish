@@ -28,6 +28,34 @@ end
 
 function fishconfig
   vim ~/.config/fish/config.fish
+  source ~/.config/fish/config.fish
+end
+
+function goto-pi
+  ssh pi@10.147.20.248
+end
+
+function goto-anvil
+  ssh -i ~/.ssh/id_rsa_toptal vasyl.melnychuk@anvil.toptal.net
+end
+
+# Bumdler 
+function be
+  bundle exec $argv
+end
+
+function bi
+  bundle install
+end
+
+function ct
+  cd ~/projects/toptal
+end
+
+function restart-postgres
+  brew services stop postgresql
+  rm /usr/local/var/postgres/postmaster.pid
+  brew services start postgresql
 end
 
 source (rbenv init - | psub)

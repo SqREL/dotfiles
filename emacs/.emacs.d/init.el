@@ -1,56 +1,77 @@
+;; Default emacs path since i'm using Stow to populate configs
 (setq user-emacs-directory (file-truename "~/dotfiles/emacs/.emacs.d/"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Initialize use-package
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                 (not (gnutls-available-p))))
-    (proto (if no-ssl "http" "https")))
-    ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-    (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-    ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-    (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-(add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 
+;; Install 'use-package' if necessary
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-(eval-when-compile (require 'use-package))
+;; Enable use-package
+(eval-when-compile
+  (require 'use-package))
 
+;; Now you don't need to write ensure t since it is default
 (setq use-package-always-ensure t)
 
-;;; -*- lexical-binding: t -*-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun tangle-init ()
-  "If the current buffer is 'init.org' the code-blocks are
-tangled, and the tangled file is compiled."
-  (when (equal (buffer-file-name)
-               (expand-file-name (concat user-emacs-directory "init.org")))
-    ;; Avoid running hooks when tangling.
-    (let ((prog-mode-hook nil))
-      (org-babel-tangle)
-      (byte-compile-file (concat user-emacs-directory "init.el")))))
 
-(add-hook 'after-save-hook 'tangle-init)
+;; Automatically compile init.el file on save
 
-(eval-when-compile
-  (setq use-package-expand-minimally byte-compile-current-file))
+(defun byte-compile-init-files (file)
+  "Automatically compile FILE."
+  (interactive)
+  (save-restriction
+    ;; Suppress the warning when you setq an undefined variable.
+    (setq byte-compile-warnings '(not free-vars obsolete))
+    (byte-compile-file (expand-file-name file))))
 
-;;(toggle-frame-fullscreen)
+(add-hook
+ 'after-save-hook
+ (function
+  (lambda ()
+    (if (string= (concat user-emacs-directory "init.el")
+                 (file-truename (buffer-file-name)))
+        (byte-compile-init-files (concat user-emacs-directory "init.el"))))))
 
+;; END
+
+
+;; Open Emacs in fullscreen always
+(if (not (eq (frame-parameter nil 'fullscreen) 'fullboth))
+    (toggle-frame-fullscreen) nil)
+
+
+;; Use macos dark theme
 (when (memq window-system '(mac ns))
   (add-to-list 'default-frame-alist '(ns-appearance . dark)) ;; {light, dark}
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 
-  ;(load-theme 'tsdh-light)
+;; One of the best colorschemas
 (use-package gruvbox-theme
   :ensure t
   :demand
   :config (load-theme 'gruvbox t))
 
+;; Setup font settings
 (set-face-attribute 'default nil :font "Fira Code Retina 13")
 (setq-default line-spacing 0)
-(setq initial-frame-alist '((top . 0) (left . 0) (width . 202) (height . 70)))
+
+;; Disable toolbar
 (tool-bar-mode -1)
 
 (use-package smartparens
@@ -66,11 +87,11 @@ tangled, and the tangled file is compiled."
   (define-key smartparens-mode-map (kbd "C-<right>") 'sp-forward-slurp-sexp) ;; something strange
   (define-key smartparens-mode-map (kbd "C-<left>") 'sp-forward-barf-sexp))  ;; since it's mac default keybinding
 
-  (global-visual-line-mode 1)
+(global-visual-line-mode 1)
 
 (setq column-number-mode t) ;; show columns in addition to rows in mode line
 
-(global-display-line-numbers-mode t)
+(global-display-line-numbers-mode 0)
 
 (setq-default frame-title-format "%b (%f)")
 
@@ -89,8 +110,6 @@ tangled, and the tangled file is compiled."
   (which-key-mode)
   (setq which-key-idle-delay 0.5))
 
-(blink-cursor-mode 0)
-
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
 (setq create-lockfiles nil)  ; stop creating .# files
@@ -103,8 +122,7 @@ tangled, and the tangled file is compiled."
  cursor-in-non-selected-windows t  ; Hide the cursor in inactive windows
 
  echo-keystrokes 0.1               ; Show keystrokes right away, don't show the message in the scratch buffe
- initial-scratch-message nil       ; Empty scratch buffer
- initial-major-mode 'org-mode      ; org mode by default
+ ;initial-scratch-message nil       ; Empty scratch buffer
  sentence-end-double-space nil     ; Sentences should end in one space, come on!
  confirm-kill-emacs 'y-or-n-p      ; y and n instead of yes and no when quitting
  ;; help-window-select t              ; select help window so it's easy to quit it with 'q'
@@ -122,30 +140,13 @@ tangled, and the tangled file is compiled."
 
 (setq ring-bell-function 'ignore)
 
-(setq scroll-margin 10
-   scroll-step 1
-   next-line-add-newlines nil
-   scroll-conservatively 10000
-   scroll-preserve-screen-position 1)
-
-(setq mouse-wheel-follow-mouse 't)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
-
 (use-package super-save
   :config
   (super-save-mode +1))
 
 (use-package exec-path-from-shell)
-
-
-(use-package plantuml-mode
-  :config
-  (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode)))
-
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
-
-(use-package shell-pop)
 
 (global-set-key (kbd "s-<backspace>") 'kill-whole-line)
 (global-set-key (kbd "M-S-<backspace>") 'kill-word)
@@ -165,53 +166,8 @@ tangled, and the tangled file is compiled."
 
 (global-set-key (kbd "s-z") 'undo)
 
-(defun my-pop-local-mark-ring ()
-  (interactive)
-  (set-mark-command t))
-
-(defun unpop-to-mark-command ()
-  "Unpop off mark ring. Does nothing if mark ring is empty."
-  (interactive)
-      (when mark-ring
-        (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
-        (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
-        (when (null (mark t)) (ding))
-        (setq mark-ring (nbutlast mark-ring))
-        (goto-char (marker-position (car (last mark-ring))))))
-
-(global-set-key (kbd "s-,") 'my-pop-local-mark-ring)
-(global-set-key (kbd "s-.") 'unpop-to-mark-command)
-
-(global-set-key (kbd "s-<") 'previous-buffer)
-(global-set-key (kbd "s->") 'next-buffer)
-
-(defun vsplit-last-buffer ()
-  (interactive)
-  (split-window-vertically)
-  (other-window 1 nil)
-  (switch-to-next-buffer))
-
-(defun hsplit-last-buffer ()
-  (interactive)
-  (split-window-horizontally)
-  (other-window 1 nil)
-  (switch-to-next-buffer))
-
-(global-set-key (kbd "s-o") (kbd "C-x o"))
-
-(global-set-key (kbd "s-w") (kbd "C-x 0")) ;; just like close tab in a web browser
-(global-set-key (kbd "s-W") (kbd "C-x 1")) ;; close others with shift
-
-(global-set-key (kbd "s-T") 'vsplit-last-buffer)
-(global-set-key (kbd "s-t") 'hsplit-last-buffer)
-
-(use-package expand-region
-  :config
-  (global-set-key (kbd "s-'") 'er/expand-region))
-
-(use-package move-text
-  :config
-  (move-text-default-bindings))
+(global-set-key (kbd "s-,") 'previous-buffer)
+(global-set-key (kbd "s-.") 'next-buffer)
 
 (defun smart-open-line ()
   "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
@@ -253,15 +209,6 @@ tangled, and the tangled file is compiled."
           (join-line 1)))))
 
 (global-set-key (kbd "s-j") 'smart-join-line)
-;; (global-set-key (kbd "s-J") 'smart-join-line)
-
-;; (global-set-key (kbd "s-i") 'previous-line)
-;; (global-set-key (kbd "s-k") 'next-line)
-;; (global-set-key (kbd "s-j") 'left-char)
-;; (global-set-key (kbd "s-l") 'right-char)
-
-(global-set-key (kbd "M-u") 'upcase-dwim)
-(global-set-key (kbd "M-l") 'downcase-dwim)
 
 (use-package visual-regexp
   :config
@@ -270,30 +217,14 @@ tangled, and the tangled file is compiled."
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq require-final-newline t)
 
-(use-package multiple-cursors
-  :config
-  (setq mc/always-run-for-all 1)
-  (global-set-key (kbd "s-d") 'mc/mark-next-like-this)
-  (global-set-key (kbd "M-s-d") 'mc/edit-beginnings-of-lines)
-  (global-set-key (kbd "s-D") 'mc/mark-all-dwim)
-  (define-key mc/keymap (kbd "<return>") nil))
-
 (global-set-key (kbd "s-/") 'comment-line)
 
-(put 'dired-find-alternate-file 'disabled nil)
+(defun stop-using-minibuffer ()
+  "kill the minibuffer"
+  (when (and (>= (recursion-depth) 1) (active-minibuffer-window))
+    (abort-recursive-edit)))
 
-(use-package dired
-  :ensure nil
-  :custom
-  (dired-auto-revert-buffer t)
-  (dired-dwim-target t)
-  (dired-hide-details-hide-symlink-targets nil)
-  (dired-listing-switches "-alh")
-  (dired-ls-F-marks-symlinks nil)
-  (dired-recursive-copies 'always))
-
-(setq split-height-threshold 0)
-(setq split-width-threshold nil)
+(add-hook 'mouse-leave-buffer-hook 'stop-using-minibuffer)
 
 (use-package windmove
   :config
@@ -301,56 +232,6 @@ tangled, and the tangled file is compiled."
   (global-set-key (kbd "s-]")  'windmove-right)        ;; Cmd+] go to right window
   (global-set-key (kbd "s-{")  'windmove-up)           ;; Cmd+Shift+[ go to upper window
   (global-set-key (kbd "s-}")  'windmove-down))      ;; Ctrl+Shift+[ go to down window
-
-(winner-mode 1)
-(global-set-key (kbd "C-s-[") 'winner-undo)
-(global-set-key (kbd "C-s-]") 'winner-redo)
-
-(use-package shackle
-  :init
-  (setq shackle-default-alignment 'below
-        shackle-default-size 0.4
-        shackle-rules '((help-mode           :align below :select t)
-                        (helpful-mode        :align below)
-                        (dired-mode          :ignore t)
-
-                        (compilation-mode    :select t   :size 0.25)
-                        ("*compilation*"     :select nil :size 0.25)
-                        ("*ag searcph*"       :select nil :size 0.25)
-                        ("*Flycheck errors*" :select nil :size 0.25)
-                        ("*Warnings*"        :select nil :size 0.25)
-                        ("*Error*"           :select nil :size 0.25)
-
-                        ("*Org Links*"       :select nil   :size 0.2)
-
-                        (neotree-mode                     :align left)
-                        (magit-status-mode                :align bottom :size 0.5  :inhibit-window-quit t)
-                        (magit-log-mode                   :same t                  :inhibit-window-quit t)
-                        (magit-commit-mode                :ignore t)
-                        (magit-diff-mode     :select nil  :align left   :size 0.5)
-                        (git-commit-mode                  :same t)
-                        (vc-annotate-mode                 :same t)
-                        ("^\\*git-gutter.+\\*$" :regexp t :size 15 :noselect t)
-                        ))
-  :config
-  (shackle-mode 1))
-  ;; (defun my/shackle-defaults (plist)
-  ;;   "Ensure popups are always aligned and selected by default. Eliminates the need
-  ;;  for :align t on every rule."
-  ;;   (when plist
-  ;;     (unless (or (plist-member plist :align)
-  ;;                 (plist-member plist :same)
-  ;;                 (plist-member plist :frame))
-  ;;       (plist-put plist :align t))
-  ;;     (unless (or (plist-member plist :select)
-  ;;                 (plist-member plist :noselect))
-  ;;       (plist-put plist :select t)))
-  ;;   plist)
-  ;; (advice-add #'shackle--match :filter-return #'my/shackle-defaults)
-
-  ;; (add-hook 'my/after-init-hook 'shackle-mode))
-
-(global-unset-key (kbd "s-n"))
 
 ;; Go to other windows easily with one keystroke Cmd-something.
 (global-set-key (kbd "s-1") (kbd "C-x 1"))  ;; Cmd-1 kill other windows (keep 1)
@@ -363,40 +244,55 @@ tangled, and the tangled file is compiled."
   :config
   (define-key projectile-mode-map (kbd "s-P") 'projectile-command-map)
   (projectile-mode +1)
-  (setq projectile-project-search-path '("/Users/sqrel/projects/" "/Users/sqrel/projects/toptal")))
+  (setq projectile-project-search-path '("/Users/sqrel/projects/" "/Users/sqrel/projects/toptal" "/Users/sqrel/knowledge/" "/Users/sqrel/projects/vendors/"))
+  (setq projectile-enable-caching t))
+  ;;(setq projectile-indexing-method 'native))
 
-(use-package helm-swoop
+;; Use minimalist Ivy for most things.
+(use-package ivy
+  :diminish                             ;; don't show Ivy in minor mode list
   :config
-  (global-set-key (kbd "s-f") 'helm-swoop))
+  (ivy-mode 1)                          ;; enable Ivy everywhere
+  (setq ivy-use-virtual-buffers t)      ;; show bookmarks and recent files in buffer list
+  (setq ivy-count-format "(%d/%d) ")
+  (setq ivy-re-builders-alist
+      '((swiper . ivy--regex-plus)
+        (t      . ivy--regex-fuzzy)))
+  (global-set-key (kbd "s-b") 'ivy-switch-buffer))  ;; Cmd+b show buffers and recent files
 
-(use-package helm
+
+;; Swiper is a better local finder.
+(use-package swiper
   :config
-  (require 'helm-config)
-  (helm-mode 1)
-  (helm-autoresize-mode 1)
-  (setq helm-follow-mode-persistent t)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (setq helm-M-x-fuzzy-match t)
-  (setq helm-buffers-fuzzy-matching t)
-  (setq helm-recentf-fuzzy-match t)
-  (setq helm-apropos-fuzzy-match t)
-  (setq helm-split-window-inside-p t)
-  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-  (global-set-key (kbd "s-b") 'helm-mini)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  )
-(setq helm-swoop-pre-input-function
-      (lambda () ""))
+  (global-set-key (kbd "s-f") 'swiper)) ;; Cmd+f find text
 
-(use-package helm-projectile
+
+;; Better menus with Counsel (a layer on top of Ivy)
+(use-package counsel
   :config
-  (helm-projectile-on))
+  (global-set-key (kbd "M-x") 'counsel-M-x)            ;; Alt+x run command
+  (global-set-key (kbd "s-P") 'counsel-M-x)            ;; Cmd+Shift+p run command
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)  ;; Replace built-in Emacs 'find file' (open file) with Counsel
+  (global-set-key (kbd "s-o") 'counsel-find-file))     ;; Cmd+o open file
 
-(use-package helm-ag
+(use-package smex)  ;; show recent commands when invoking Alt-x (or Cmd+Shift+p)
+(use-package flx)
+;; Make Ivy a bit more friendly by adding information to ivy buffers, e.g. description of commands in Alt-x, meta info when switching buffers, etc.
+(use-package ivy-rich
   :config
-  (global-set-key (kbd "s-F") 'helm-projectile-ag))
+  (ivy-rich-mode 1)
+  (setq ivy-rich-path-style 'abbrev)) ;; Abbreviate paths using abbreviate-file-name (e.g. replace “/home/username” with “~”)
 
-(global-set-key (kbd "s-p") 'helm-projectile-find-file)
+
+;; Integrate Projectile with Counsel
+(use-package counsel-projectile
+  :config
+  (counsel-projectile-mode 1)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "s-p") 'counsel-projectile-find-file)         ;; Cmd+p open file in current project
+  (global-set-key (kbd "s-F") 'counsel-projectile-ag))     ;; Cmd+Shift+F search in current git repository
+
+(setq projectile-completion-system 'ivy)             ;; Use Ivy in Projectile
 
 (use-package magit
   :config
@@ -421,22 +317,14 @@ tangled, and the tangled file is compiled."
         neo-mode-line-type 'none
         neo-auto-indent-point t)
   (setq neo-theme (if (display-graphic-p) 'nerd 'arrow))
-  (global-set-key (kbd "s-B") 'neotree-toggle))
-
-(setq ispell-program-name "aspell")
-
-(add-hook 'text-mode-hook 'flyspell-mode)
-;; (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-
-(global-set-key (kbd "s-\\") 'ispell-word)
-
-(use-package powerthesaurus
-  :config
-  (global-set-key (kbd "s-|") 'powerthesaurus-lookup-word-dwim))
-
-(use-package define-word
-  :config
-  (global-set-key (kbd "M-\\") 'define-word-at-point))
+  (global-set-key (kbd "s-B") 'neotree-toggle)
+  (add-hook 'neo-after-create-hook
+  #'(lambda (_)
+       (with-current-buffer (get-buffer neo-buffer-name)
+         (setq truncate-lines t)
+         (setq word-wrap nil)
+         (make-local-variable 'auto-hscroll-mode)
+         (setq auto-hscroll-mode nil)))))
 
 (use-package company
   :config
@@ -455,18 +343,12 @@ tangled, and the tangled file is compiled."
 (use-package ruby-mode
   :mode "\\.rb\\'"
   :interpreter "ruby")
-(use-package slim-mode)
 (use-package rspec-mode
   :config
   (require 'rspec-mode))
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode)
+(use-package feature-mode
   :config
-  (add-hook 'after-init-hook #'global-flycheck-mode)
-  (package-install 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
+  (require 'feature-mode))
 (use-package clojure-mode)
 (use-package dockerfile-mode
   :config
@@ -481,114 +363,22 @@ tangled, and the tangled file is compiled."
   :config
   (setq web-mode-markup-indent-offset 2))
 
-(use-package emmet-mode
-  :commands emmet-mode
-  :init
-  (setq emmet-indentation 2)
-  (setq emmet-move-cursor-between-quotes t)
+(use-package elixir-mode
   :config
-  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-  (add-hook 'web-mode-hook  'emmet-mode)
-  (add-hook 'css-mode-hook  'emmet-mode)) ;; enable Emmet's css abbreviation.
+  (require 'elixir-mode))
+(use-package alchemist)
 
 (defun close-all-buffers ()
   (interactive)
   (mapc 'kill-buffer (buffer-list)))
-
-  (use-package htmlize)
 
 (defun fterm ()
   "Open fish terminal"
   (interactive)
   (ansi-term "/usr/local/bin/fish"))
 
-(use-package org
-  :config
-  (setq org-startup-indented t))
-
-(setq org-directory "~/Dropbox/me.txt/org")
-
-(setq org-agenda-files '("~/Dropbox/me.txt/org"))
-
-(setq org-refile-targets (quote ((nil :maxlevel . 9)
-                                 (org-agenda-files :maxlevel . 9))))
-
-(setq org-support-shift-select t)
-
-(eval-after-load 'org
-  '(progn
-    (add-to-list 'org-structure-template-alist '("el" "#+BEGIN_SRC emacs-lisp \n?\n#+END_SRC"))
-    (define-key org-mode-map (kbd "C-'") nil)
-    (global-set-key "\C-ca" 'org-agenda)))
-
-(setq org-src-tab-acts-natively t)
-(setq org-src-preserve-indentation t)
-(setq org-src-fontify-natively t)
-
-;(find-file "~/Dropbox/me.txt/org/main.org")
-
-(setq org-log-into-drawer t)
-
-(defun org-mode-export-links ()
-  "Export links document to HTML automatically when 'links.org' is changed"
-  (when (equal (buffer-file-name) "/Users/sqrel/Dropbox/me.txt/org/links.org")
-    (progn
-      (org-html-export-to-html)
-      (message "HTML exported"))))
-
-(add-hook 'after-save-hook 'org-mode-export-links)
-
-(global-set-key (kbd "\e\ec") (lambda () (interactive) (find-file "~/.emacs.d/init.org")))
+(global-set-key (kbd "\e\ec") (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
 (global-set-key (kbd "\e\er") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
-(global-set-key (kbd "\e\em") (lambda () (interactive) (find-file "~/Dropbox/me.txt/org/main.org")))
-(global-set-key (kbd "\e\el") (lambda () (interactive) (find-file "~/Dropbox/me.txt/org/links.org")))
-(global-set-key (kbd "\e\ew") (lambda () (interactive) (find-file "~/Dropbox/me.txt/org/work.org")))
-(global-set-key (kbd "\e\et") (lambda () (interactive) (find-file "~/Code/test.rb")))
-
-(global-set-key (kbd "C-c c") 'org-capture)
-
-(setq org-cycle-separator-lines 1)
-
-(setq org-log-done 'time)
-
-;; no shift or alt with arrows
-(define-key org-mode-map (kbd "<S-left>") nil)
-(define-key org-mode-map (kbd "<S-right>") nil)
-(define-key org-mode-map (kbd "<M-left>") nil)
-(define-key org-mode-map (kbd "<M-right>") nil)
-;; no shift-alt with arrows
-(define-key org-mode-map (kbd "<M-S-left>") nil)
-(define-key org-mode-map (kbd "<M-S-right>") nil)
-
-(define-key org-mode-map (kbd "C-c C-,") 'org-metaleft)
-(define-key org-mode-map (kbd "C-c C-.") 'org-metaright)
-
-(setq org-use-speed-commands t)
-
-(setq org-capture-templates
-      (quote (
-               ;; (("t"
-               ;;   "TODO"
-               ;;   entry
-               ;;   (file+olp "inbox.org" "Tasks")
-               ;;   "* TODO %?\n%U\n%a\n")
-
-               ("n"
-                 "Note"
-                 entry
-                 (file+olp "main.org" "Notes Inbox")
-                 "* %?\n%U\n%a\n")
-               ("j"
-                 "Journal"
-                 entry
-                 (file+datetree "journal.org")
-                 "* %U\n%?")
-               ("w"
-                "Work Todo"
-                entry
-                (file+datetree "work.org")
-                "* TODO %?\n----Entered on %U"))
-               ))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -596,10 +386,11 @@ tangled, and the tangled file is compiled."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yaml-mode yafolding which-key web-mode visual-regexp use-package super-save smartparens slim-mode simpleclip shell-pop shackle rspec-mode powerthesaurus plantuml-mode neotree multiple-cursors move-text markdown-mode magit htmlize helm-swoop helm-projectile helm-ag haml-mode gruvbox-theme git-gutter flycheck expand-region exec-path-from-shell emmet-mode dumb-jump dracula-theme dockerfile-mode define-word company cider))))
+    (alchemist elixir-mode yaml-mode yafolding which-key web-mode visual-regexp use-package super-save smex smartparens simpleclip rspec-mode neotree markdown-mode magit ivy-rich haml-mode gruvbox-theme git-gutter flx feature-mode exec-path-from-shell dumb-jump dockerfile-mode counsel-projectile company cider))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(setq mac-system-move-file-to-trash-use-finder nil)

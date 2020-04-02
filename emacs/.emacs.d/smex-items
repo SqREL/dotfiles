@@ -1,0 +1,16 @@
+
+;; ----- smex-history -----
+(
+ projectile-discover-projects-in-directory
+ cd
+ 5x5
+ arp
+ dbx
+ dig
+ erc
+)
+
+;; ----- smex-data -----
+(
+ (projectile-discover-projects-in-directory . 1)
+)
