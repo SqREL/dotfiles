@@ -1,16 +1,22 @@
 
 ;; ----- smex-history -----
 (
- projectile-discover-projects-in-directory
- cd
- 5x5
- arp
- dbx
- dig
- erc
+ version
+ help
+ cider-jack-in
+ cider-quit
+ fterm
+ markdown-preview
+ markdown-mode
 )
 
 ;; ----- smex-data -----
 (
- (projectile-discover-projects-in-directory . 1)
+ (markdown-mode . 1)
+ (markdown-preview . 1)
+ (fterm . 1)
+ (cider-jack-in . 2)
+ (cider-quit . 1)
+ (help . 2)
+ (version . 1)
 )

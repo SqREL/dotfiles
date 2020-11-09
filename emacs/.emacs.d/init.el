@@ -131,6 +131,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)      ; y and n instead of yes and no everywhere else
 (scroll-bar-mode -1)
 (delete-selection-mode 1)
+(global-unset-key (kbd "s-n"))
 (global-unset-key (kbd "s-p"))
 (global-hl-line-mode nil)
 
@@ -244,7 +245,7 @@
   :config
   (define-key projectile-mode-map (kbd "s-P") 'projectile-command-map)
   (projectile-mode +1)
-  (setq projectile-project-search-path '("/Users/sqrel/projects/" "/Users/sqrel/projects/toptal" "/Users/sqrel/knowledge/" "/Users/sqrel/projects/vendors/"))
+  (setq projectile-project-search-path '("/Users/vasylmelnychuk/projects/" "/Users/vasylmelnychuk/projects/toptal" "/Users/vasylmelnychuk/projects/vendors/"))
   (setq projectile-enable-caching t))
   ;;(setq projectile-indexing-method 'native))
 
@@ -315,6 +316,7 @@
         neo-smart-open t
         neo-show-hidden-files t
         neo-mode-line-type 'none
+        ;neo-vc-integration 'char
         neo-auto-indent-point t)
   (setq neo-theme (if (display-graphic-p) 'nerd 'arrow))
   (global-set-key (kbd "s-B") 'neotree-toggle)
@@ -334,7 +336,10 @@
   (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package yaml-mode)
-(use-package markdown-mode)
+(use-package markdown-mode
+  :config
+  (custom-set-variables
+   '(markdown-command "/usr/local/bin/pandoc")))
 (use-package haml-mode)
 (use-package cider)
 (use-package dumb-jump
@@ -378,6 +383,7 @@
   (ansi-term "/usr/local/bin/fish"))
 
 (global-set-key (kbd "\e\ec") (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
+(global-set-key (kbd "\e\ek") (lambda () (interactive) (find-file "~/projects/knowledge/index.org")))
 (global-set-key (kbd "\e\er") (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -386,7 +392,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (alchemist elixir-mode yaml-mode yafolding which-key web-mode visual-regexp use-package super-save smex smartparens simpleclip rspec-mode neotree markdown-mode magit ivy-rich haml-mode gruvbox-theme git-gutter flx feature-mode exec-path-from-shell dumb-jump dockerfile-mode counsel-projectile company cider))))
+    (edit-indirect alchemist elixir-mode yaml-mode yafolding which-key web-mode visual-regexp use-package super-save smex smartparens simpleclip rspec-mode neotree markdown-mode magit ivy-rich haml-mode gruvbox-theme git-gutter flx feature-mode exec-path-from-shell dumb-jump dockerfile-mode counsel-projectile company cider))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
