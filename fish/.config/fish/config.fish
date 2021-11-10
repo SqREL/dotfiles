@@ -9,8 +9,10 @@ set -U BUNDLER_EDITOR nvim
 set -U LC_ALL en_US.UTF-8
 set -x LC_ALL en_US.UTF-8
 set -x GOPATH $HOME/projects/go
+set -U BETTER_ERRORS_EDITOR rubymine
 #set -x PGHOST $PGHOST "localhost"
-set fish_greeting
+# set fish_greeting
+set -u KNOWLEDGEDIR "$HOME/projects/knowledge/"
 
 function ls
   exa $argv
@@ -35,7 +37,7 @@ function fishconfig
 end
 
 function goto-pi
-  ssh pi@192.168.88.232
+  ssh pi@192.168.1.88
 end
 
 function goto-anvil
@@ -46,9 +48,18 @@ function download-anvil-dump
   scp -i ~/.ssh/id_rsa_toptal vasyl.melnychuk@anvil-app01.staging.toptal.net:/tmp/anvil.sql.gz ~/Downloads/
 end
 
+function run_pg
+  cd ~/projects/toptal/platform
+  docker-compose up postgresql
+end
+
 # Bumdler 
 function be
   bundle exec $argv
+end
+
+function ber
+  bundle exec rubocop $argv
 end
 
 function bi
@@ -84,7 +95,7 @@ function restart-postgres
   brew services start postgresql
 end
 
-source (rbenv init - | psub)
+# source (rbenv init - | psub)
 
 set PATH /usr/local/opt/qt@5.5/bin /usr/local/opt/node@8/bin $PATH
 
@@ -94,35 +105,35 @@ set yellow (set_color yellow)
 set green (set_color green)
 set red (set_color red)
 set gray (set_color -o black)
-
-# Fish git prompt
-set __fish_git_prompt_showdirtystate 'yes'
-set __fish_git_prompt_showstashstate 'yes'
-set __fish_git_prompt_showuntrackedfiles 'yes'
-set __fish_git_prompt_showupstream 'yes'
-set __fish_git_prompt_color_branch yellow
-set __fish_git_prompt_color_upstream_ahead green
-set __fish_git_prompt_color_upstream_behind red
-
-# Status Chars
-set __fish_git_prompt_char_dirtystate '⚡'
-set __fish_git_prompt_char_stagedstate '→'
-set __fish_git_prompt_char_untrackedfiles '☡'
-set __fish_git_prompt_char_stashstate '↩'
-set __fish_git_prompt_char_upstream_ahead '+'
-set __fish_git_prompt_char_upstream_behind '-'
-
-function fish_prompt
-  set last_status $status
-
-  set_color $fish_color_cwd
-  printf '%s' (prompt_pwd)
-  set_color normal
-
-  printf '%s ' (__fish_git_prompt)
-
-  set_color normal
-end
+ 
+ # Fish git prompt
+ # set __fish_git_prompt_showdirtystate 'yes'
+ # set __fish_git_prompt_showstashstate 'yes'
+ # set __fish_git_prompt_showuntrackedfiles 'yes'
+ # set __fish_git_prompt_showupstream 'yes'
+ # set __fish_git_prompt_color_branch yellow
+ # set __fish_git_prompt_color_upstream_ahead green
+ # set __fish_git_prompt_color_upstream_behind red
+ # 
+ # # Status Chars
+ # set __fish_git_prompt_char_dirtystate '⚡'
+ # set __fish_git_prompt_char_stagedstate '→'
+ # set __fish_git_prompt_char_untrackedfiles '☡'
+ # set __fish_git_prompt_char_stashstate '↩'
+ # set __fish_git_prompt_char_upstream_ahead '+'
+ # set __fish_git_prompt_char_upstream_behind '-'
+ # 
+ # function fish_prompt
+ #   set last_status $status
+ # 
+ #   set_color $fish_color_cwd
+ #   printf '%s' (prompt_pwd)
+ #   set_color normal
+ # 
+ #   printf '%s ' (__fish_git_prompt)
+ # 
+ #   set_color normal
+ # end
 
 set -g fish_user_paths "/usr/local/opt/elasticsearch@5.6/bin" $fish_user_paths
 #set -g fish_user_paths "/usr/local/opt/node@8/bin" $fish_user_paths
@@ -160,12 +171,37 @@ function prepare-cucumber
   end
 end
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/vasylmelnychuk/Downloads/google-cloud-sdk/path.fish.inc' ]; . '/Users/vasylmelnychuk/Downloads/google-cloud-sdk/path.fish.inc'; end
+function vimtoday
+  set basedir "$KNOWLEDGEDIR/notes/"
+  mkdir -p "$basedir"(date +"%Y")"/"(date +"%m")
+  vim "$basedir"(date +"%Y/%m/%d.md")
+end
+
+function links
+  vim "$KNOWLEDGEDIR/links.md"
+end
+
+function know
+  cd $KNOWLEDGEDIR
+  vim
+end
 
 set -g fish_user_paths "/usr/local/opt/node@12/bin" $fish_user_paths
 source /Users/vasylmelnychuk/bin/google-cloud-sdk/path.fish.inc
 set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
 set -g fish_user_paths "/Users/vasylmelnychuk/bin" $fish_user_paths
+set -g fish_user_paths "/Users/vasylmelnychuk/.emacs.d/bin" $fish_user_paths
+
+set -U TZ_LIST "America/Recife;Jaimerson Araújo,Africa/Lagos;Samuel Ebeagu,Europe/Warsaw;Juliusz Gonera,Europe/Warsaw;Kamil Lemański,Europe/Kaliningrad;Oleg Polivannyi,Europe/Moscow;Aleksandr Kariakin,Europe/Kiev;Vasyl Melnychuk,"
+
 
 #starship init fish | source
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/vasylmelnychuk/google-cloud-sdk/path.fish.inc' ]; . '/Users/vasylmelnychuk/google-cloud-sdk/path.fish.inc'; end
+set -g fish_user_paths "/usr/local/opt/gnu-getopt/bin" $fish_user_paths
+
+source /usr/local/opt/asdf/asdf.fish
+source /usr/local/opt/asdf/libexec/asdf.fish
+
+status --is-interactive; and rbenv init - fish | source

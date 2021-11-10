@@ -1,3 +1,5 @@
+eval (direnv hook fish)
+
 function vim
   nvim $argv
 end
@@ -123,7 +125,7 @@ function fish_prompt
 end
 
 set -g fish_user_paths "/usr/local/opt/elasticsearch@5.6/bin" $fish_user_paths
-set -g fish_user_paths "/usr/local/opt/node@8/bin" $fish_user_paths
+#set -g fish_user_paths "/usr/local/opt/node@8/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/imagemagick@6/bin" $fish_user_paths
 set -g fish_user_paths "$GOPATH/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/postgresql@11/bin" $fish_user_paths
@@ -131,20 +133,39 @@ set -g fish_user_paths "/usr/local/opt/elasticsearch@5.6/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/imagemagick@6/bin" $fish_user_paths
 
 function prepare-for-tests
-  psql -d postgres -c 'DROP DATABASE IF EXISTS toptal_test;'
+  docker exec -it toptal_postgresql psql -U toptal -d postgres -c 'DROP DATABASE IF EXISTS toptal_test;'
   git checkout db/schema.rb
   git checkout engines/billing/db/schema.rb
   be rails db:test:prepare
 end
 
 function prepare-development
-  psql -d postgres -c 'DROP DATABASE IF EXISTS toptal_test;'
-  psql -d postgres -c 'DROP DATABASE IF EXISTS toptal_development_empty;'
+  docker exec -it toptal_postgresql psql -U toptal -d postgres -c 'DROP DATABASE IF EXISTS toptal_development;'
+  docker exec -it toptal_postgresql psql -U toptal -d postgres -c 'DROP DATABASE IF EXISTS toptal_test;'
   git checkout db/schema.rb
   git checkout db/analytics/schema.rb
   git checkout engines/billing/db/schema.rb
-  bin/setup
+  bin/setup --verbose
   be rake es:stop
   be rake es:start
   be rails db:test:prepare
 end
+
+function prepare-cucumber
+  begin
+    set -lx RAILS_ENV "cucumber"
+    bundle exec rails rails_cache:clear
+    bundle exec rake db:drop db:create db:setup
+    yarn run build-parallel
+  end
+end
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/vasylmelnychuk/Downloads/google-cloud-sdk/path.fish.inc' ]; . '/Users/vasylmelnychuk/Downloads/google-cloud-sdk/path.fish.inc'; end
+
+set -g fish_user_paths "/usr/local/opt/node@12/bin" $fish_user_paths
+source /Users/vasylmelnychuk/bin/google-cloud-sdk/path.fish.inc
+set -g fish_user_paths "/usr/local/sbin" $fish_user_paths
+set -g fish_user_paths "/Users/vasylmelnychuk/bin" $fish_user_paths
+
+#starship init fish | source

@@ -44,7 +44,7 @@ call minpac#add('Xuyuanp/nerdtree-git-plugin')
 
 " Mark changed lines of code
 " Commented due to lack of performance
-" call minpac#add('airblade/vim-gitgutter')
+call minpac#add('airblade/vim-gitgutter')
 
 " Add git support
 call minpac#add('tpope/vim-fugitive')
@@ -58,7 +58,9 @@ call minpac#add('vim-scripts/groovy.vim')
 " call minpac#add('venantius/vim-cljfmt')
 
 " Colorscheme
-call minpac#add('morhetz/gruvbox')
+" call minpac#add('morhetz/gruvbox')
+" call minpac#add('rakr/vim-one')
+call minpac#add('arcticicestudio/nord-vim')
 
 " Programming tracker
 " call minpac#add('wakatime/vim-wakatime')
@@ -154,6 +156,7 @@ set nojoinspaces
 
 
 " Use system clipboard
+" set clipboard=unnamedplus
 set clipboard=unnamedplus
 
 " Ignore caseb when searching via vim
@@ -164,6 +167,10 @@ set background=dark
 
 "colorscheme onehalflight
 "colorscheme dracula
+" colorscheme gruvbox
+"
+ "colorscheme one
+colorscheme nord
 
 "" ----------------------------------------------------------------------------
 ""
