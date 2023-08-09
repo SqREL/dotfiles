@@ -1,4 +1,4 @@
-eval (/opt/homebrew/bin/brew shellenv)
+eval (brew shellenv)
 eval (direnv hook fish)
 
 function vim
@@ -86,4 +86,7 @@ set PATH /opt/homebrew/opt/python@3.10/libexec/bin $PATH
 
 status --is-interactive; and rbenv init - fish | source
 
-source /opt/homebrew/opt/asdf/libexec/asdf.fish
+# Clean greeting
+set -U fish_greeting
+
+# source /opt/homebrew/opt/asdf/libexec/asdf.fish
