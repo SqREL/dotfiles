@@ -1,7 +1,7 @@
 let g:python_host_prog = '/usr/bin/python2.7'
 " let g:python3_host_prog = '/usr/bin/python3'
 " let g:python3_host_prog = '/usr/local/bin/python3'
-let g:python3_host_prog = '/usr/local/opt/python@3.7/bin/python3'
+let g:python3_host_prog = '/usr/bin/python3'
 
 " Configure vimwiki
 let g:vimwiki_list = [{'path': '~/knowledge/', 'syntax': 'markdown', 'ext': '.md'}]
@@ -25,9 +25,10 @@ packadd minpac
 call minpac#init()
 
 " Best and fastest fuzzy finder
-set rtp+=/usr/local/opt/fzf
+" set rtp+=/usr/local/opt/fzf
+set rtp+=/opt/homebrew/bin/fzf
 "set rtp+=/usr/local/bin/fzf
-call minpac#add('junegunn/fzf.vim')
+call minpac#add('junegunn/fzf')
 
 " Autocompletion
 call minpac#add('Shougo/deoplete.nvim')
@@ -51,6 +52,8 @@ call minpac#add('tpope/vim-fugitive')
 
 call minpac#add('vim-scripts/groovy.vim')
 
+call minpac#add('github/copilot.vim')
+
 " CLOJURE GOES HERE
 
 " call minpac#add('tpope/vim-fireplace')
@@ -60,7 +63,8 @@ call minpac#add('vim-scripts/groovy.vim')
 " Colorscheme
 " call minpac#add('morhetz/gruvbox')
 " call minpac#add('rakr/vim-one')
-call minpac#add('arcticicestudio/nord-vim')
+" call minpac#add('one-dark/onedark.nvim')
+" call minpac#add('arcticicestudio/nord-vim')
 
 " Programming tracker
 " call minpac#add('wakatime/vim-wakatime')
@@ -69,7 +73,7 @@ call minpac#add('arcticicestudio/nord-vim')
 call minpac#add('rainerborene/vim-reek')
 
 " Dracula color scheme
-" call minpac#add('dracula/vim')
+call minpac#add('dracula/vim')
 
 " Fish terminal
 call minpac#add('dag/vim-fish')
@@ -166,11 +170,11 @@ set ignorecase
 set background=dark
 
 "colorscheme onehalflight
-"colorscheme dracula
+" colorscheme dracula
 " colorscheme gruvbox
 "
  "colorscheme one
-colorscheme nord
+colorscheme dracula
 
 "" ----------------------------------------------------------------------------
 ""
